@@ -53,8 +53,10 @@ const jsScripts = bundles => {
 };
 
 export const indexHtml = ({ helmet, initialState, markup, bundles }) => {
-  const htmlAttrs = helmet.htmlAttributes.toString()
-  const bodyAttrs = helmet.bodyAttributes.toString()
+  let htmlAttrs = ''
+  let bodyAttrs = ''
+  if (helmet.htmlAttributes) htmlAttrs = helmet.htmlAttributes.toString()
+  if (helmet.bodyAttributes) htmlAttrs = helmet.bodyAttributes.toString()
 
   return `
     <!doctype html>
@@ -71,7 +73,7 @@ export const indexHtml = ({ helmet, initialState, markup, bundles }) => {
       </head>
       <body ${bodyAttrs}>
         <div id="root">${markup}</div>
-
+        <div id="modal"></div>
         <script>
           window.process = ${env.forIndexHtml};
           window.__INITIAL_STATE__ = ${JSON.stringify(initialState)}

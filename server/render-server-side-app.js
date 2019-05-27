@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOMServer from 'react-dom/server'
 import { Provider } from 'react-redux'
 import { StaticRouter } from 'react-router-dom'
-import Helmet from 'react-helmet'
+import { Helmet, HelmetProvider } from 'react-helmet-async';
 import Loadable from 'react-loadable'
 import { getBundles } from 'react-loadable/webpack'
 
@@ -21,15 +21,18 @@ export const renderServerSideApp = (req, res) => {
 }
 
 function renderApp(req, res, store) {
-  const context = {};
-  const modules = [];
+  const context = {}
+  const modules = []
+  const helmetContext = {}
   const markup = ReactDOMServer.renderToString(
     <Loadable.Capture report={moduleName => modules.push(moduleName)}>
-      <Provider store={store}>
-        <StaticRouter location={req.url} context={context}>
-          <App />
-        </StaticRouter>
-      </Provider>
+      <HelmetProvider context={helmetContext}>
+        <Provider store={store}>
+          <StaticRouter location={req.url} context={context}>
+            <App />
+          </StaticRouter>
+        </Provider>
+      </HelmetProvider>
     </Loadable.Capture>
   );
 
@@ -37,7 +40,7 @@ function renderApp(req, res, store) {
     res.redirect(context.url)
   } else {
     const fullMarkup = indexHtml({
-      helmet: Helmet.renderStatic(),
+      helmet: helmetContext.helmet,
       initialState: store.getState(),
       bundles: getBundles(stats, modules),
       markup

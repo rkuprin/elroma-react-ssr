@@ -1,7 +1,7 @@
 import React from 'react'
 import { Switch, Route } from 'react-router-dom'
 import Loadable from 'react-loadable'
-import Helmet from 'react-helmet'
+import { Helmet } from 'react-helmet-async'
 
 import Loading from './components/Loading'
 import * as metadata from './metadata'
